@@ -1,6 +1,7 @@
 package guru.springframework.spring6resttemplate.client;
 
 import guru.springframework.spring6resttemplate.model.BeerDTO;
+import guru.springframework.spring6resttemplate.model.BeerDTOPageImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.Page;
@@ -12,15 +13,19 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class BeerClientImpl implements BeerClient {
 
+  private final static String BASE_PATH = "http://localhost:8080";
+  private final static String GET_LIST_PATH = "/api/v1/beer";
+
   private final RestTemplateBuilder restTemplateBuilder;
 
   @Override
   public Page<BeerDTO> listBeers() {
     RestTemplate template = restTemplateBuilder.build();
 
-    ResponseEntity<String> response = template.getForEntity("http://localhost:8080/api/v1/beer", String.class);
+    ResponseEntity<BeerDTOPageImpl> response = template.getForEntity(BASE_PATH + GET_LIST_PATH, BeerDTOPageImpl.class);
 
     System.out.println(response.getBody());
+    System.out.println(response.getBody().getContent().get(0).getClass().getSimpleName());
 
     return null;
   }
