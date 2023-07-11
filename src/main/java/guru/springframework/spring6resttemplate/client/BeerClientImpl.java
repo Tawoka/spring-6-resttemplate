@@ -13,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class BeerClientImpl implements BeerClient {
 
-  private final static String BASE_PATH = "http://localhost:8080";
   private final static String GET_LIST_PATH = "/api/v1/beer";
 
   private final RestTemplateBuilder restTemplateBuilder;
@@ -22,7 +21,7 @@ public class BeerClientImpl implements BeerClient {
   public Page<BeerDTO> listBeers() {
     RestTemplate template = restTemplateBuilder.build();
 
-    ResponseEntity<BeerDTOPageImpl> response = template.getForEntity(BASE_PATH + GET_LIST_PATH, BeerDTOPageImpl.class);
+    ResponseEntity<BeerDTOPageImpl> response = template.getForEntity(GET_LIST_PATH, BeerDTOPageImpl.class);
 
     System.out.println(response.getBody());
     System.out.println(response.getBody().getContent().get(0).getClass().getSimpleName());
