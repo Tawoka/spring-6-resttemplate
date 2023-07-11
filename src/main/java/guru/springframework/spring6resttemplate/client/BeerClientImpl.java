@@ -26,7 +26,7 @@ public class BeerClientImpl implements BeerClient {
     System.out.println(response.getBody());
     System.out.println(response.getBody().getContent().get(0).getClass().getSimpleName());
 
-    return null;
+    return response.getBody();
   }
 
 }
