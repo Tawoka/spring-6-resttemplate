@@ -15,8 +15,8 @@ import java.util.UUID;
 public class BeerDTO {
     private UUID id;
     private Integer version;
-    private String beerName;
-    private BeerStyle beerStyle;
+    private String name;
+    private BeerStyle style;
     private String upc;
     private Integer quantityOnHand;
     private BigDecimal price;

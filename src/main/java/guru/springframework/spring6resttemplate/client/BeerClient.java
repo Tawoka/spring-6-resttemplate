@@ -13,4 +13,6 @@ public interface BeerClient {
 
   BeerDTO getBeerById(UUID id);
 
+  BeerDTO createBeer(BeerDTO beer);
+
 }
