@@ -51,6 +51,19 @@ public class BeerClientImpl implements BeerClient {
     return restTemplate.getForObject(uri.getPath(), BeerDTO.class);
   }
 
+  @Override
+  public BeerDTO updateBeer(BeerDTO beer) {
+    RestTemplate restTemplate = restTemplateBuilder.build();
+    restTemplate.put(GET_BEER_PATH, beer, beer.getId());
+    return getBeerById(beer.getId());
+  }
+
+  @Override
+  public void deleteBeer(UUID id) {
+    RestTemplate restTemplate = restTemplateBuilder.build();
+    restTemplate.delete(GET_BEER_PATH, id);
+  }
+
   private String buildUriString(BeerQueryParamDTO queryParameters) {
     UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath(GET_LIST_PATH);
     if (queryParameters != null) {
