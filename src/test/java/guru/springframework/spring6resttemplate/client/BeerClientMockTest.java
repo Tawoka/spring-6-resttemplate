@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springframework.spring6resttemplate.config.RestTemplateBuilderConfig;
 import guru.springframework.spring6resttemplate.model.BeerDTO;
 import guru.springframework.spring6resttemplate.model.BeerDTOPageImpl;
+import guru.springframework.spring6resttemplate.model.BeerQueryParamDTO;
 import guru.springframework.spring6resttemplate.model.BeerStyle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -131,6 +132,27 @@ public class BeerClientMockTest {
         .isThrownBy(() -> beerClient.deleteBeer(beerDto.getId()));
 
     server.verify();
+  }
+
+  @Test
+  void listBeersWithQueryParameters() throws JsonProcessingException {
+    String response = objectMapper.writeValueAsString(getPage());
+    URI uri = UriComponentsBuilder.fromHttpUrl(URL + BeerClientImpl.BEER_MAIN_PATH)
+        .queryParam("name", "ALE")
+        .build()
+        .toUri();
+
+    server.expect(method(HttpMethod.GET))
+        .andExpect(requestTo(uri))
+        .andExpect(queryParam("name", "ALE"))
+        .andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
+
+    BeerQueryParamDTO ale = BeerQueryParamDTO.builder()
+        .name("ALE")
+        .build();
+
+    Page<BeerDTO> page = beerClient.listBeers(ale);
+    assertThat(page.getContent().size()).isGreaterThan(0);
   }
 
   private void setupGetIdExpectation() {
