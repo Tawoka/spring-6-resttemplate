@@ -19,8 +19,8 @@ import java.util.UUID;
 @Service
 public class BeerClientImpl implements BeerClient {
 
-  private final static String GET_LIST_PATH = "/api/v1/beer";
-  private final static String GET_BEER_PATH = "/api/v1/beer/{beerId}";
+  public final static String BEER_MAIN_PATH = "/api/v1/beer";
+  public final static String BEER_ID_PATH = "/api/v1/beer/{beerId}";
 
   private final RestTemplateBuilder restTemplateBuilder;
 
@@ -41,31 +41,31 @@ public class BeerClientImpl implements BeerClient {
   @Override
   public BeerDTO getBeerById(UUID id) {
     RestTemplate restTemplate = restTemplateBuilder.build();
-    return restTemplate.getForObject(GET_BEER_PATH, BeerDTO.class, id);
+    return restTemplate.getForObject(BEER_ID_PATH, BeerDTO.class, id);
   }
 
   @Override
   public BeerDTO createBeer(BeerDTO beer) {
     RestTemplate restTemplate = restTemplateBuilder.build();
-    URI uri = restTemplate.postForLocation(GET_LIST_PATH, beer);
+    URI uri = restTemplate.postForLocation(BEER_MAIN_PATH, beer);
     return restTemplate.getForObject(uri.getPath(), BeerDTO.class);
   }
 
   @Override
   public BeerDTO updateBeer(BeerDTO beer) {
     RestTemplate restTemplate = restTemplateBuilder.build();
-    restTemplate.put(GET_BEER_PATH, beer, beer.getId());
+    restTemplate.put(BEER_ID_PATH, beer, beer.getId());
     return getBeerById(beer.getId());
   }
 
   @Override
   public void deleteBeer(UUID id) {
     RestTemplate restTemplate = restTemplateBuilder.build();
-    restTemplate.delete(GET_BEER_PATH, id);
+    restTemplate.delete(BEER_ID_PATH, id);
   }
 
   private String buildUriString(BeerQueryParamDTO queryParameters) {
-    UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath(GET_LIST_PATH);
+    UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath(BEER_MAIN_PATH);
     if (queryParameters != null) {
       addQueryParameters(queryParameters, uriComponentsBuilder);
     }
