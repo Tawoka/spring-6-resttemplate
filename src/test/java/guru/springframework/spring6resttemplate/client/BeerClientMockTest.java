@@ -30,8 +30,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withAccepted;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 @RestClientTest
 @Import(RestTemplateBuilderConfig.class)
@@ -82,9 +81,7 @@ public class BeerClientMockTest {
         .andExpect(requestToUriTemplate(URL + BeerClientImpl.BEER_MAIN_PATH))
         .andRespond(withAccepted().location(uri));
 
-    server.expect(method(HttpMethod.GET))
-        .andExpect(requestToUriTemplate(URL + BeerClientImpl.BEER_ID_PATH, beerDto.getId()))
-        .andRespond(withSuccess(dtoJson, MediaType.APPLICATION_JSON));
+    setupGetIdExpectation();
 
     BeerDTO beer = beerClient.createBeer(beerDto);
     assertThat(beer.getId()).isEqualTo(beerDto.getId());
@@ -93,12 +90,39 @@ public class BeerClientMockTest {
 
   @Test
   void getBeerById() {
-    server.expect(method(HttpMethod.GET))
-        .andExpect(requestToUriTemplate(URL + BeerClientImpl.BEER_ID_PATH, beerDto.getId()))
-        .andRespond(withSuccess(dtoJson, MediaType.APPLICATION_JSON));
+    setupGetIdExpectation();
 
     BeerDTO beerById = beerClient.getBeerById(beerDto.getId());
     assertThat(beerById.getId()).isEqualTo(beerDto.getId());
+  }
+
+  @Test
+  void updateBeer() {
+    server.expect(method(HttpMethod.PUT))
+        .andExpect(requestToUriTemplate(URL + BeerClientImpl.BEER_ID_PATH, beerDto.getId()))
+        .andRespond(withNoContent());
+
+    setupGetIdExpectation();
+
+    BeerDTO beer = beerClient.updateBeer(beerDto);
+    assertThat(beer.getId()).isEqualTo(beerDto.getId());
+  }
+
+  @Test
+  void deleteBeer() {
+    server.expect(method(HttpMethod.DELETE))
+        .andExpect(requestToUriTemplate(URL + BeerClientImpl.BEER_ID_PATH, beerDto.getId()))
+        .andRespond(withNoContent());
+
+    beerClient.deleteBeer(beerDto.getId());
+
+    server.verify();
+  }
+
+  private void setupGetIdExpectation() {
+    server.expect(method(HttpMethod.GET))
+        .andExpect(requestToUriTemplate(URL + BeerClientImpl.BEER_ID_PATH, beerDto.getId()))
+        .andRespond(withSuccess(dtoJson, MediaType.APPLICATION_JSON));
   }
 
   BeerDTO getBeerDto() {
