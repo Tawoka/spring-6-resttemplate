@@ -7,6 +7,7 @@ import guru.springframework.spring6resttemplate.model.BeerDTO;
 import guru.springframework.spring6resttemplate.model.BeerDTOPageImpl;
 import guru.springframework.spring6resttemplate.model.BeerQueryParamDTO;
 import guru.springframework.spring6resttemplate.model.BeerStyle;
+import org.hamcrest.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -31,6 +32,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
@@ -145,6 +147,7 @@ public class BeerClientMockTest {
     server.expect(method(HttpMethod.GET))
         .andExpect(requestTo(uri))
         .andExpect(queryParam("name", "ALE"))
+        .andExpect(header("Authorization", Matchers.any(String.class)))
         .andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
 
     BeerQueryParamDTO ale = BeerQueryParamDTO.builder()
